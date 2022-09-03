@@ -7,12 +7,9 @@ import toCapitalize from "./../../Utils/toCapitalize";
 const wcc = require("world-countries-capitals");
 
 function WorldWrapper() {
-  const [selectCountry, setSelectCountry] = useState("");
   const [currentCountry, setCurrentCountry] = useState<String>("");
   const [currentTime, setCurrentTime] = useState<String>("");
   const svgRef = useRef<SVGElement>(null);
-
-  var timezones = require("timezones.json");
 
   useEffect(() => {
     const timezone: string = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -32,8 +29,6 @@ function WorldWrapper() {
     const getTheTime = setInterval(() => {
       setCurrentTime(new Date().toLocaleTimeString());
     }, 1000);
-
-    // timezones.map((timezone) => console.log(timezone.offset, timezone.text));
 
     return () => clearInterval(getTheTime);
   }, []);
