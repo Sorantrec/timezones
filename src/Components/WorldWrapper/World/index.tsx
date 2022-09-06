@@ -27,18 +27,33 @@ interface ICountry {
 export default function World({ svgRef }: any) {
   const [selectedCountry, setSelectedCountry] = useState([]);
 
+  const gainTargetCountry = (currentTargetCountry: HTMLElement) => {
+    const country = Country.getAllCountries().filter(
+      (country: ICountry) =>
+        country.name.toLowerCase() === currentTargetCountry.id.toLowerCase()
+    );
+    return country;
+  };
+
   const countryHover = (event: MouseEvent) => {
     const target = event.target as HTMLElement;
+    const targetParentElement = target.parentElement as HTMLElement;
     if (!target.id) return;
+
     [...svgRef.current.children].forEach((country) => {
       country.classList.remove("hoveredCountry");
     });
-    const targetCountryTimezones = Country.getAllCountries().filter(
-      (country: ICountry) =>
-        country.name.toLowerCase() === target.id.toLowerCase()
-    );
-    setSelectedCountry(targetCountryTimezones);
-    target.classList.add("hoveredCountry");
+
+    const targetCountryTimezones = gainTargetCountry(target);
+    const targetCountryGroupTimezone = gainTargetCountry(targetParentElement);
+
+    if (targetParentElement?.tagName === "g") {
+      setSelectedCountry(targetCountryGroupTimezone);
+      targetParentElement.classList.add("hoveredCountry");
+    } else {
+      setSelectedCountry(targetCountryTimezones);
+      target.classList.add("hoveredCountry");
+    }
   };
 
   return (
